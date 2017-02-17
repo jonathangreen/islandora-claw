@@ -106,6 +106,7 @@ class BroadcasterTest extends IslandoraKernelTestBase {
   protected function createBroadcaster(StatefulStomp $stomp) {
     // Pull the plugin definition out of the plugin system.
     $actionManager = $this->container->get('plugin.manager.rules_action');
+    $jwt = $this->container->get('jwt.authentication.jwt');
     $definitions = $actionManager->getDefinitions();
     $pluginDefinition = $definitions['islandora_broadcast'];
 
@@ -114,7 +115,8 @@ class BroadcasterTest extends IslandoraKernelTestBase {
       'islandora_broadcast',
       $pluginDefinition,
       $this->testQueue,
-      $stomp
+      $stomp,
+      $jwt
     );
 
     // Set the required contexts for the action to run.
