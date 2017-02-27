@@ -6,6 +6,7 @@ use Drupal\jwt\Authentication\Event\JwtAuthValidateEvent;
 use Drupal\jwt\Authentication\Event\JwtAuthValidEvent;
 use Drupal\jwt\Authentication\Event\JwtAuthGenerateEvent;
 use Drupal\jwt\Authentication\Event\JwtAuthEvents;
+use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Session\AccountInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -18,11 +19,11 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 class JwtEventSubscriber implements EventSubscriberInterface {
 
   /**
-   * The entity manager used to load users.
+   * User storage to load users.
    *
-   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
+   * @var \Drupal\Core\Entity\EntityStorageInterface
    */
-  protected $entityManager;
+  protected $userStorage;
 
   /**
    * The current user.
@@ -34,17 +35,35 @@ class JwtEventSubscriber implements EventSubscriberInterface {
   /**
    * Constructor.
    *
-   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_manager
-   *   The entity manager service.
+   * @param \Drupal\Core\Entity\EntityStorageInterface $userStorage
+   *   User storage to load users.
    * @param \Drupal\Core\Session\AccountInterface $user
    *   The current user.
    */
   public function __construct(
-    EntityTypeManagerInterface $entity_manager,
+    EntityStorageInterface $userStorage,
     AccountInterface $user
   ) {
-    $this->entityManager = $entity_manager;
+    $this->userStorage = $userStorage;
     $this->currentUser = $user;
+  }
+
+  /**
+   * Factory.
+   *
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityManager
+   *   Entity manager to get user storage.
+   * @param \Drupal\Core\Session\AccountInterface $user
+   *   The current user.
+   */
+  public static function create(
+    EntityTypeManagerInterface $entityManager,
+    AccountInterface $user
+  ) {
+    return new static(
+      $entityManager->getStorage('user'),
+      $user
+    );
   }
 
   /**
@@ -93,13 +112,14 @@ class JwtEventSubscriber implements EventSubscriberInterface {
     $url = $token->getClaim(['drupal', 'url']);
     if ($uid === NULL || $name === NULL || $roles === NULL || $url === NULL) {
       $event->invalidate("Expected data missing from payload.");
+      return;
     }
 
-    $user = $this->entityManager->getStorage('user')->load($uid);
+    $user = $this->userStorage->load($uid);
     if ($user === NULL) {
       $event->invalidate("Specified UID does not exist.");
     }
-    if ($user->getAccountName() !== $name) {
+    elseif ($user->getAccountName() !== $name) {
       $event->invalidate("Account name does not match.");
     }
   }
@@ -112,9 +132,8 @@ class JwtEventSubscriber implements EventSubscriberInterface {
    */
   public function loadUser(JwtAuthValidEvent $event) {
     $token = $event->getToken();
-    $user_storage = $this->entityManager->getStorage('user');
     $uid = $token->getClaim(['drupal', 'uid']);
-    $user = $user_storage->load($uid);
+    $user = $this->userStorage->load($uid);
     $event->setUser($user);
   }
 
