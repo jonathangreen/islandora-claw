@@ -14,6 +14,7 @@ services:
     arguments: ['@config.factory']
   islandora.jwt-subscriber:
     class: Drupal\islandora\EventSubscriber\JwtEventSubscriber
-    arguments: [ '@entity_type.manager', '@current_user' ]
+    factory: ['Drupal\islandora\EventSubscriber\JwtEventSubscriber', create]
+    arguments: ['@entity_type.manager', '@current_user']
     tags:
       - { name: event_subscriber }
