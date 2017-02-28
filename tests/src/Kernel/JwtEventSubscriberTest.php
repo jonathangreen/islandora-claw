@@ -92,7 +92,7 @@ class JwtEventSubscriberTest extends IslandoraKernelTestBase {
     $validateEvent = new JwtAuthValidateEvent($jwt);
     $subscriber->validate($validateEvent);
 
-    assert(!$event->isValid(), "Event must be invalidated when user cannot be loaded.");
+    assert(!$validateEvent->isValid(), "Event must be invalidated when user cannot be loaded.");
   }
 
   /**
@@ -117,7 +117,7 @@ class JwtEventSubscriberTest extends IslandoraKernelTestBase {
     $validateEvent = new JwtAuthValidateEvent($jwt);
     $subscriber->validate($validateEvent);
 
-    assert(!$event->isValid(), "Event must be invalidated when users don't align.");
+    assert(!$validateEvent->isValid(), "Event must be invalidated when users don't align.");
   }
 
   /**
