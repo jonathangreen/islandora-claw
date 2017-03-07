@@ -91,10 +91,10 @@ class JwtEventSubscriber implements EventSubscriberInterface {
     $event->addClaim('exp', strtotime('+2 hour'));
 
     // Islandora claims we need to validate.
-    $event->addClaim(['drupal', 'uid'], $this->currentUser->id());
-    $event->addClaim(['drupal', 'name'], $this->currentUser->getAccountName());
-    $event->addClaim(['drupal', 'roles'], $this->currentUser->getRoles(FALSE));
-    $event->addClaim(['drupal', 'url'], $base_secure_url);
+    $event->addClaim('uid', $this->currentUser->id());
+    $event->addClaim('name', $this->currentUser->getAccountName());
+    $event->addClaim('roles', $this->currentUser->getRoles(FALSE));
+    $event->addClaim('url', $base_secure_url);
   }
 
   /**
@@ -106,10 +106,10 @@ class JwtEventSubscriber implements EventSubscriberInterface {
   public function validate(JwtAuthValidateEvent $event) {
     $token = $event->getToken();
 
-    $uid = $token->getClaim(['drupal', 'uid']);
-    $name = $token->getClaim(['drupal', 'name']);
-    $roles = $token->getClaim(['drupal', 'roles']);
-    $url = $token->getClaim(['drupal', 'url']);
+    $uid = $token->getClaim('uid');
+    $name = $token->getClaim('name');
+    $roles = $token->getClaim('roles');
+    $url = $token->getClaim('url');
     if ($uid === NULL || $name === NULL || $roles === NULL || $url === NULL) {
       $event->invalidate("Expected data missing from payload.");
       return;
@@ -132,7 +132,7 @@ class JwtEventSubscriber implements EventSubscriberInterface {
    */
   public function loadUser(JwtAuthValidEvent $event) {
     $token = $event->getToken();
-    $uid = $token->getClaim(['drupal', 'uid']);
+    $uid = $token->getClaim('uid');
     $user = $this->userStorage->load($uid);
     $event->setUser($user);
   }
