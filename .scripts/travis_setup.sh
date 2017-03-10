@@ -16,6 +16,7 @@ composer require sebastian/phpcpd
 composer require "legovaer/phpcov-runner=dev-master"
 sudo ln -s /opt/utils/vendor/bin/phpcs /usr/bin/phpcs
 sudo ln -s /opt/utils/vendor/bin/phpcpd /usr/bin/phpcpd
+sudo ln -s /opt/utils/vendor/bin/phpcovrunner /usr/bin/phpcovrunner
 phpenv rehash
 phpcs --config-set installed_paths /opt/utils/vendor/drupal/coder/coder_sniffer
 
