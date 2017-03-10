@@ -20,6 +20,8 @@ sudo ln -s /opt/utils/vendor/bin/phpcovrunner /usr/bin/phpcovrunner
 phpenv rehash
 phpcs --config-set installed_paths /opt/utils/vendor/drupal/coder/coder_sniffer
 
+ls -lah /opt/utils/vendor/legovaer/phpcov-runner/lib
+
 echo "Composer install drupal site"
 cd /opt
 git clone https://github.com/Islandora-CLAW/drupal-project.git drupal
@@ -45,5 +47,5 @@ tar -xzf apache-activemq-5.14.3-bin.tar.gz
 apache-activemq-5.14.3/bin/activemq start
 
 echo "Do some bad things for codecov"
-cat $SCRIPT_DIR/codecov.php > /opt/drupal/web/core/scripts/run-tests-cov.sh
+cat $SCRIPT_DIR/codecov.sh > /opt/drupal/web/core/scripts/run-tests-cov.sh
 tail -n +2 /opt/drupal/web/core/scripts/run-tests.sh >> /opt/drupal/web/core/scripts/run-tests-cov.sh
