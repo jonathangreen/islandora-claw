@@ -13,7 +13,7 @@ cd /opt/utils
 composer require squizlabs/php_codesniffer
 composer require drupal/coder
 composer require sebastian/phpcpd
-sudo composer global require 'legovaer/phpcov-runner=*'
+composer global require 'legovaer/phpcov-runner=*'
 sudo ln -s /opt/utils/vendor/bin/phpcs /usr/bin/phpcs
 sudo ln -s /opt/utils/vendor/bin/phpcpd /usr/bin/phpcpd
 phpenv rehash
