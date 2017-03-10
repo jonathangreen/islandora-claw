@@ -45,4 +45,5 @@ tar -xzf apache-activemq-5.14.3-bin.tar.gz
 apache-activemq-5.14.3/bin/activemq start
 
 echo "Do some bad things for codecov"
-cat $SCRIPT_DIR/codecov.php /opt/drupal/web/core/scripts/run-tests.sh > /opt/drupal/web/core/scripts/run-tests-cov.sh
+cat $SCRIPT_DIR/codecov.php > /opt/drupal/web/core/scripts/run-tests-cov.sh
+tail -n +2 /opt/drupal/web/core/scripts/run-tests.sh >> /opt/drupal/web/core/scripts/run-tests-cov.sh
