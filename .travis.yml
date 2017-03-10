@@ -24,4 +24,9 @@ script:
   - $SCRIPT_DIR/line_endings.sh $TRAVIS_BUILD_DIR
   - phpcs --standard=Drupal --extensions=php,module,inc,install,test,profile,theme,css,info $TRAVIS_BUILD_DIR
   - phpcpd --names *.module,*.inc,*.test,*.php $TRAVIS_BUILD_DIR
+  - phpcovrunner start
   - php core/scripts/run-tests.sh --verbose --php `which php` islandora
+
+after_success:
+  - phpcovrunner stop
+  - bash <(curl -s https://codecov.io/bash)
